@@ -4,51 +4,69 @@ date_default_timezone_set("UTC");
 
 require_once("vendor/autoload.php");
 
-use Goutte\Client;
+$xml_string = file_get_contents("http://hsvbg.org/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&xml=true");
 
-$client = new Client();
-
-$crawler = $client->request('GET', 'http://hsvbg.org/events');
+$xml = simplexml_load_string($xml_string);
 
 $events = [];
-$currentDay = "";
 
-$crawler->filter(".ai1ec-day")->each(function ($day) {
+function objectifyDate($dateString) {
+    $dateSplit = explode("T", $dateString);
+    $hasTime = false;
+    if (isset($dateSplit[1])) {
+        $date = DateTime::createFromFormat("Ymd\THis", $dateString);
+        $hasTime = true;
+    } else {
+        $date = DateTime::createFromFormat("Ymd", $dateString);
+    }
 
-$currentDay = $day->filter(".ai1ec-load-view")->extract("_text")[0];
+    return [
+        "date" => $date,
+        "hasTime" => $hasTime
+    ];
+}
 
-$day->filter(".ai1ec-event-container")->each(function ($node) {
+function addEvent($event, $date) {
     global $events;
 
-    $title = trim($node->filter(".ai1ec-event-title")->extract("_text")[0]);
-    $location = trim($node->filter(".ai1ec-event-location")->extract("_text")[0]);
-    $month = trim($node->filter(".ai1ec-month")->extract("_text")[0]);
-    //$day = trim($node->filter(".ai1ec")->extract("_text")[0]);
-    $weekday = trim($node->filter(".ai1ec-weekday")->extract("_text")[0]);
-    $time = trim($node->filter(".ai1ec-event-time")->extract("_text")[0]);
-    $description = trim($node->filter(".ai1ec-event-description")->extract("_text")[0]);
-    $img = trim($node->filter(".ai1ec-content_img img")->extract("src")[0]);
+    $title = trim($event->summary);
+    $description = trim($event->description);
+    $month = $date["date"]->format("M");
+    $day = $date["date"]->format("j");
+    $weekday = $date["date"]->format("D");
 
-    $timeRange = explode("@", $time);
-    $times = explode("–", $timeRange[1]);
-    $timeStart = trim($times[0]);
-    $timeEnd = trim($times[1]);
+    if ($date["hasTime"] === true) {
+        $timeStart = $date["date"]->format("g:i A");
+    }
 
     $event = [
         "title" => $title,
         "description" => $description,
-        "location" => substr($location, 2),
-        "img" => $img,
+        "location" => "",
+        "img" => "",
+        "url" => (string)$event->url->attributes()->uri[0],
         "month" => $month,
-        "day" => $currentDay,
+        "day" => $day,
         "weekday" => $weekday,
-        "timeStart" => $time,
+        "timeStart" => $timeStart,
         "timeEnd" => $timeEnd,
     ];
 
     $events[] = $event;
-});
-});
+}
+
+foreach ($xml->vevent as $event) {
+    if (!empty($event->rdate)) {
+        foreach ($event->rdate as $rdate) {
+            $date = objectifyDate($rdate);
+            addEvent($event, $date);
+        }
+    } else {
+        $dateStart = trim($event->dtstart);
+        $date = objectifyDate($dateStart);
+        addEvent($event, $date);
+    }
+}
 
 echo "<pre>";
 var_dump($events);
