@@ -23,6 +23,10 @@ $crawler->filter(".ai1ec-event-wrap")->each(function ($node) {
     $time = trim($node->filter(".ai1ec-event-time")->extract("_text")[0]);
     $description = trim($node->filter(".ai1ec-event-description")->extract("_text")[0]);
     $img = trim($node->filter(".ai1ec-content_img img")->extract("src")[0]);
+    $url = trim($node->filter(".ai1ec-load-event")->extract("href")[0]);
+
+    $titleSplit = explode("@", $title);
+    $actualTitle = trim($titleSplit[0]);
 
     $timeRange = explode("@", $time);
     $times = explode("–", $timeRange[1]);
@@ -30,10 +34,11 @@ $crawler->filter(".ai1ec-event-wrap")->each(function ($node) {
     $timeEnd = trim($times[1]);
 
     $event = [
-        "title" => $title,
+        "title" => $actualTitle,
         "description" => $description,
         "location" => substr($location, 2),
         "img" => $img,
+        "url" => $url,
         "month" => $month,
         "day" => $day,
         "weekday" => $weekday,
