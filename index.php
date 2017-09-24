@@ -39,9 +39,6 @@ for ($i = 0; $i < 6; $i++) {
 foreach ($dates as $date) {
     $filtered = array_filter($events, function($event) {
         global $date;
-        if ($event["source"] === "UAHEvents") {
-            return false;
-        }
         if (empty($event["timeStart"])) {
             return false;
         }
