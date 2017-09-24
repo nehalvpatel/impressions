@@ -81,7 +81,7 @@ foreach ($dates as $date) {
             }
 
             section, .card {
-                background: rgba(0, 0, 0, 0.7);
+                background: rgba(0, 0, 0, 0.8);
             }
 
             h1 {
@@ -115,7 +115,7 @@ if (!empty($event["img"])) {
 ?>
 		<div class="card-body">
           <h4 class="card-title"><?php echo $event["title"]; ?></h4>
-          <span class="badge badge-light"><?php echo $proper_sources[$event["source"]]; ?></span>
+          <span class="badge badge-light"><?php echo $event["location"]; ?></span>
 <?php
 if (!empty($event["timeStart"]) && !empty($event["timeEnd"])) {
 ?>
