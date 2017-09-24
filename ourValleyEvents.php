@@ -38,6 +38,36 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
         $timeEnd = trim($asdfSplit[1]);
     }
 
+    if (!preg_match("/[a-z]/i", $timeStart)){
+        if (strpos($timeEnd, "am") !== false) {
+            $timeStart = trim($timeStart) . "am";
+        } else if (strpos($timeEnd, "pm") !== false) {
+            $timeStart = trim($timeStart) . "pm";
+        }
+    }
+
+    if (isset($timeStart)) {
+        if (substr($timeStart, -1) !== "m") {
+            $timeStart = substr($timeStart, 0, -1);
+        }
+        if (substr($timeStart, -1) !== "m") {
+            $timeStart = substr($timeStart, 0, -1);
+        }
+        $timeStartObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeStart));
+        $timeStart = $timeStartObject->format("h:i A");
+    }
+
+    if (isset($timeEnd)) {
+        if (!is_numeric(substr($timeEnd, 0, 1))) {
+            $timeEnd = substr($timeEnd, 1);
+        }
+        if (!is_numeric(substr($timeEnd, 0, 1))) {
+            $timeEnd = substr($timeEnd, 1);
+        }
+        $timeEndObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeEnd));
+        $timeEnd = $timeEndObject->format("h:i A");
+    }
+
     $event = [
         "source" => "ourValleyEvents",
         "title" => $title,
@@ -75,7 +105,17 @@ $crawler->filter(".twSimpleTableTable tr")->each(function ($node) {
             return ($i === 3);
         })->each(function ($asdf) {
             global $bruh;
-            $bruh["timeStart"] = $asdf->text();
+            $timeStart = $asdf->text();
+            if ($timeStart !== "" && $timeStart !== NULL) {
+                if (substr($timeStart, -1) !== "m") {
+                    $timeStart = substr($timeStart, 0, -1);
+                }
+                if (substr($timeStart, -1) !== "m") {
+                    $timeStart = substr($timeStart, 0, -1);
+                }
+                $timeStartObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeStart));
+                $bruh["timeStart"] = $timeStartObject->format("h:i A");
+            }
         });
 
         $node->children()->reduce(function ($asdf, $i) {
