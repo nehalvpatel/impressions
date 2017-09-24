@@ -84,11 +84,11 @@ foreach ($dates as $date) {
 foreach ($days as $day) {
 ?>
 <h3><?php echo $day["date"]->format("l, F j"); ?></h3>
-    <div class="row">
+    <div class="card-columns">
 <?php
 foreach ($day["events"] as $event) {
 ?>
-    <div class="col-sm-3">
+    <!-- <div class="col-sm-3"> -->
 	  <div class="card">
 <?php
 if (!empty($event["img"])) {
@@ -110,17 +110,27 @@ if (!empty($event["timeStart"]) && !empty($event["timeEnd"])) {
           <span class="badge badge-info"><?php echo $event["timeStart"]; ?></span>
 <?php
 }
+
+$class = "";
+if (!empty($event["description"]) || !empty($event["url"])) {
+    $class = "mt-3";
+}
 ?>
-          <p class="card-text">
-              <?php echo $event["description"];?></p>
+<div class="<?php echo $class; ?>">
 <?php
+if (!empty($event["description"])) {
+?>
+          <p class="card-text"><?php echo $event["description"]; ?></p>
+<?php
+}
 if (!empty($event["url"])) {
 ?>
-          <a href="<?php echo $event["url"];?>" class="btn btn-primary">Visit Website</a>
+          <a href="<?php echo $event["url"]; ?>" class="btn btn-info">Visit Website</a>
 <?php
 }
 ?>
-    </div>
+</div>
+    <!-- </div> -->
 </div>
 </div>
 <?php
