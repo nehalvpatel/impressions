@@ -137,7 +137,14 @@ if (!empty($event["img"])) {
 ?>
 		<div class="card-body">
           <h4 class="card-title"><?php echo $event["title"]; ?></h4>
-          <span class="badge badge-light"><?php echo $event["location"]; ?></span>
+          <span class="badge badge-light">
+<?php
+    $location = $event["location"];
+    $truncatedLocation = strlen($location) > 30 ? substr($location,0,30)."..." : $location;
+
+    echo $truncatedLocation;
+?>
+</span>
 <?php
 if (!empty($event["timeStart"]) && !empty($event["timeEnd"])) {
 ?>
