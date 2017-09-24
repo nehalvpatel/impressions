@@ -98,9 +98,9 @@ foreach ($dates as $date) {
 <?php
 foreach ($days as $day) {
 ?>
-<div class="date" style="width:30%">
+<div class="date">
 <br>
-<h3 style="text-shadow: 3px 2px blue; border: 4px solid blue"><?php echo $day["date"]->format("l, F j"); ?></h3>
+<h3 style="text-shadow: 3px 2px blue;"><?php echo $day["date"]->format("l, F j"); ?></h3>
 <br>
 </div>
     <div class="card-columns">
