@@ -7,6 +7,16 @@ $proper_sources = [
     "downtownHuntsville" => "Downtown Huntsville Events"
 ];
 
+function remove_http($url) {
+    $disallowed = array('http://', 'https://');
+    foreach($disallowed as $d) {
+       if(strpos($url, $d) === 0) {
+          return str_replace($d, '', $url);
+       }
+    }
+    return $url;
+ }
+
 date_default_timezone_set("America/Chicago");
 
 $json = file_get_contents("events.json");
@@ -115,7 +125,7 @@ foreach ($day["events"] as $event) {
 <?php
 if (!empty($event["img"])) {
 ?>
-        <img class="card-img-top" src="<?php echo $event["img"]; ?>" alt="<?php echo $event["title"]; ?>">
+        <img class="card-img-top" src="<?php echo "https://images.weserv.nl/?url=" . remove_http($event["img"]); ?>" alt="<?php echo $event["title"]; ?>">
 <?php
 }
 ?>
