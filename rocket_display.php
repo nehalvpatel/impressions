@@ -27,17 +27,33 @@ for ($i = 0; $i < 6; $i++) {
 }
 
 foreach ($dates as $date) {
-    $format = [
+    $filtered = array_filter($events, function($event) {
+        global $date;
+        if ($event["source"] === "UAHEvents") {
+            return false;
+        }
+        if (empty($event["timeStart"])) {
+            return false;
+        }
+        return DateTime::createFromFormat("j", $event["day"])->format("j") === $date->format("j");
+        // return $event["source"] === "UAHEvents";
+        // return true;
+    });
+
+    usort($filtered, function($a, $b) {
+        $ad = DateTime::createFromFormat("M j h:i A", $a["month"] . " " . $a["day"] . " " . $a["timeStart"]);
+        $bd = DateTime::createFromFormat("M j h:i A", $b["month"] . " " . $b["day"] . " " . $b["timeStart"]);
+      
+        if ($ad == $bd) {
+          return 0;
+        }
+      
+        return $ad < $bd ? -1 : 1;
+      });
+
+      $format = [
         "date" => $date,
-        "events" => array_filter($events, function($event) {
-            global $date;
-            if ($event["source"] === "UAHEvent") {
-                return false;
-            }
-            return DateTime::createFromFormat("j", $event["day"])->format("j") === $date->format("j");
-            // return $event["source"] === "UAHEvents";
-            // return true;
-        })
+        "events" => $filtered,
     ];
 
     $days[] = $format;
