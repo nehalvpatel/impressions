@@ -65,7 +65,7 @@ foreach ($dates as $date) {
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title> Website </title>
+        <title> Rocket City Events </title>
         <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
@@ -89,6 +89,7 @@ foreach ($dates as $date) {
                 color: #fff;
                 text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
                 text-align: center;
+                font-size:75px;
             }
         </style>
     </head>
@@ -98,9 +99,11 @@ foreach ($dates as $date) {
 <?php
 foreach ($days as $day) {
 ?>
+<br/>
+<br/>
 <div class="date">
-<br>
-<h3 style="color:pink; text-shadow: 3px 2px blue;"><?php echo $day["date"]->format("l, F j"); ?></h3>
+<br/>
+<h3 style="text-shadow: 3px 2px blue;"><?php echo $day["date"]->format("l, F j"); ?></h3>
 <br>
 </div>
     <div class="card-columns">
