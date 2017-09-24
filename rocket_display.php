@@ -98,7 +98,9 @@ foreach ($dates as $date) {
 <?php
 foreach ($days as $day) {
 ?>
-<h3><?php echo $day["date"]->format("l, F j"); ?></h3>
+<br>
+<h3 style="text-shadow: 3px 2px blue; border: 4px solid blue"><?php echo $day["date"]->format("l, F j"); ?></h3>
+<br>
     <div class="card-columns">
 <?php
 foreach ($day["events"] as $event) {
