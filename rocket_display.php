@@ -84,7 +84,7 @@ foreach ($dates as $date) {
                 background: rgba(0, 0, 0, 0.6);
             }
 
-            h2 {
+            h1 {
                 font-family: 'Futura';
                 color: #fff;
                 text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
@@ -94,13 +94,13 @@ foreach ($dates as $date) {
     </head>
 <body>
 	<div class="container">
-        <h2 class="mt-4">Rocket City, Alabama</h2>
+        <h1 class="mt-4">Rocket City, Alabama</h1>
 <?php
 foreach ($days as $day) {
 ?>
 <div class="date">
 <br>
-<h3 style="text-shadow: 3px 2px blue;"><?php echo $day["date"]->format("l, F j"); ?></h3>
+<h3 style="color:pink; text-shadow: 3px 2px blue;"><?php echo $day["date"]->format("l, F j"); ?></h3>
 <br>
 </div>
     <div class="card-columns">
