@@ -84,8 +84,7 @@ foreach ($dates as $date) {
                 background: rgba(0, 0, 0, 0.8);
             }
 
-            h1 {
-                font-size: 60px;
+            h2 {
                 font-family: 'Futura';
                 color: #fff;
                 text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
@@ -95,7 +94,7 @@ foreach ($dates as $date) {
     </head>
 <body>
 	<div class="container">
-        <h1>Rocket City, Alabama</h1>
+        <h2 class="mt-4">Rocket City, Alabama</h2>
 <?php
 foreach ($days as $day) {
 ?>
