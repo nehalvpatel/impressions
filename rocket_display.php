@@ -67,13 +67,19 @@ foreach ($dates as $date) {
             section, .card {
                 background: rgba(0, 0, 0, 0.7);
             }
+
+            h1 {
+                font-size: 60px;
+                font-family: 'Futura';
+                color: #fff;
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px #ff0080, 0 0 30px #ff0080, 0 0 40px #ff0080, 0 0 55px #ff0080, 0 0 75px #ff0080;
+                text-align: center;
+            }
         </style>
     </head>
 <body>
 	<div class="container">
-        <section>
-        <p> <center> <b> Rocket City, Alabama </b> </center></p>
-        </section>
+        <h1>Rocket City, Alabama</h1>
 <?php
 foreach ($days as $day) {
 ?>
@@ -84,14 +90,31 @@ foreach ($day["events"] as $event) {
 ?>
     <div class="col-sm-3">
 	  <div class="card">
-		<img class="card-img-top" src="<?php echo $event["img"]; ?>" alt="Card image cap">
+<?php
+if (!empty($event["img"])) {
+?>
+        <img class="card-img-top" src="<?php echo $event["img"]; ?>" alt="<?php echo $event["title"]; ?>">
+<?php
+}
+?>
 		<div class="card-body">
           <h4 class="card-title"><?php echo $event["title"]; ?></h4>
           <span class="badge badge-light"><?php echo $proper_sources[$event["source"]]; ?></span>
+<?php
+if (!empty($event["timeStart"]) && !empty($event["timeEnd"])) {
+?>
+          <span class="badge badge-info"><?php echo $event["timeStart"] . " - " . $event["timeEnd"]; ?></span>
+<?php
+} else if (!empty($event["timeStart"])) {
+?>
+          <span class="badge badge-info"><?php echo $event["timeStart"]; ?></span>
+<?php
+}
+?>
           <p class="card-text">
               <?php echo $event["description"];?></p>
 <?php
-if ($event["url"] !== "") {
+if (!empty($event["url"])) {
 ?>
           <a href="<?php echo $event["url"];?>" class="btn btn-primary">Visit Website</a>
 <?php
