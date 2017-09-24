@@ -1,53 +1,67 @@
 <?php
 
-date_default_timezone_set("UTC");
-
-require_once("vendor/autoload.php");
-
 use Goutte\Client;
+
+$uahEvents = [];
+
+function gatherUAHEvents() {
+    global $uahEvents;
 
 $client = new Client();
 
 $crawler = $client->request('GET', 'http://www.uah.edu/events');
 
-$events = [];
+$uahEvents = [];
 
-$crawler->filter(".jev_listrow")->each(function ($node) {
-    global $events;
+$crawler->filter(".ev_td_li")->each(function ($node) {
+    global $uahEvents;
 
     $title = trim($node->filter(".jevents-title")->extract("_text")[0]);
     $location = trim($node->filter(".jevents-event-venue")->extract("_text")[0]);
-    $month = trim($node->filter(".jevents-event-date")->extract("_text")[0]);
-    //$day = trim($node->filter(".dateInfo")->extract("title")[0]);
-    //$weekday = trim($node->filter(".jevents-event-date")->extract("_text")[0]);
-    //$time = trim($node->filter(".jevents-eventlist-starttime")->extract("_text")[0]);
-    $description = trim($node->filter(".descriptionInfo")->extract("_text")[0]);
-    $img = trim($node->filter(".ai1ec-content_img img")->extract("src")[0]);
-    $url = trim($node->filter(".ai1ec-load-event")->extract("href")[0]);
+    $monthasdf = trim($node->filter(".jevents-event-date")->extract("_text")[0]);
+    $url = "http://www.uah.edu" . trim($node->filter("a")->extract("href")[0]);
+    $timeStart = trim($node->filter(".jevents-eventlist-starttime")->extract("_text")[0]);
+    $images = $node->filter(".bkgimage")->extract("style")[0];
 
-    $dateSplit = explode(" ", $month);
-    $startDate = trim($dateSplit[0]);
-    $day = trim($dateSplit[1]);
-    $endDate = trim($dateSplit[2]);
-    $time = trim($dateSplit[4]) . trim($dateSplit[5]);
+    $re = '/url\(([^)]*)\)/';
+    preg_match_all($re, $images, $matches, PREG_SET_ORDER, 0);
+
+    $img = $matches[0][1];
+    if ($img === "") {
+        $img = $matches[1][1];
+    }
+    if ($img === "") {
+        $img = $matches[2][1];
+    } else {
+        if (strpos($img, "uah.edu") === false) {
+            $img = "http://www.uah.edu" . $img;
+        }
+    }
+
+    if (strpos($monthasdf, "-") !== false) {
+        
+    } else {
+        $date2 = explode(" ", trim($monthasdf));
+        
+        $month = $date2[0];
+        $day = $date2[1];
 
     $event = [
+        "source" => "UAHEvents",
         "title" => $title,
         "description" => $description,
         "location" => $location,
         "img" => $img,
         "url" => $url,
-        "startdate" => $day,
-        "enddate" => $endDate,
+        "month" => $month,
+        "day" => $day,
         "weekday" => $weekday,
-        "timeStart" => $time,
+        "timeStart" => $timeStart,
         "timeEnd" => $timeEnd,
     ];
 
-    $events[] = $event;
+    $uahEvents[] = $event;
+}
 });
-
-echo "<pre>";
-var_dump($events);
-echo "</pre>";
-
+    return $uahEvents;
+}

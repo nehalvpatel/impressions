@@ -8,11 +8,13 @@ require_once("downtownHuntsville.php");
 require_once("loweMill.php");
 require_once("ourValleyEvents.php");
 require_once("hsvbg.php");
+require_once("uah.php");
 
 $events = array_merge(
     gatherDowntownHuntsvilleEvents(),
     gatherLoweMillEvents(),
-    gatherOurValleyEvents()
+    gatherOurValleyEvents(),
+    gatherUAHEvents()
     // gatherBotanicalGardenEvents()
 );
 
