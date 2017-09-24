@@ -38,6 +38,50 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
         $timeEnd = trim($asdfSplit[1]);
     }
 
+    if (!preg_match("/[a-z]/i", $timeStart)){
+        if (strpos($timeEnd, "am") !== false) {
+            if (!is_numeric(substr($timeStart, -1))) {
+                $timeStart = substr($timeStart, 0, -1);
+            }
+            if (!is_numeric(substr($timeStart, -1))) {
+                $timeStart = substr($timeStart, 0, -1);
+            }
+            $timeStart = trim($timeStart) . "am";
+            $timeStartObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeStart));
+            $timeStart = $timeStartObject->format("h:i A");
+        } else if (strpos($timeEnd, "pm") !== false) {
+            if (!is_numeric(substr($timeStart, -1))) {
+                $timeStart = substr($timeStart, 0, -1);
+            }
+            if (!is_numeric(substr($timeStart, -1))) {
+                $timeStart = substr($timeStart, 0, -1);
+            }
+            $timeStart = trim($timeStart) . "pm";
+            $timeStartObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeStart));
+            $timeStart = $timeStartObject->format("h:i A");
+        }
+    } else {
+        if (substr($timeStart, -1) !== "m") {
+            $timeStart = substr($timeStart, 0, -1);
+        }
+        if (substr($timeStart, -1) !== "m") {
+            $timeStart = substr($timeStart, 0, -1);
+        }
+        $timeStartObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeStart));
+        $timeStart = $timeStartObject->format("h:i A");
+    }
+
+    if (isset($timeEnd)) {
+        if (!is_numeric(substr($timeEnd, 0, 1))) {
+            $timeEnd = substr($timeEnd, 1);
+        }
+        if (!is_numeric(substr($timeEnd, 0, 1))) {
+            $timeEnd = substr($timeEnd, 1);
+        }
+        $timeEndObject = DateTime::createFromFormat("ga", str_replace(" ", "", $timeEnd));
+        $timeEnd = $timeEndObject->format("h:i A");
+    }
+
     $event = [
         "source" => "downtownHuntsville",
         "title" => $title,
