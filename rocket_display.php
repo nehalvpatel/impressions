@@ -81,7 +81,7 @@ foreach ($dates as $date) {
             }
 
             section, .card {
-                background: rgba(0, 0, 0, 0.8);
+                background: rgba(0, 0, 0, 0.6);
             }
 
             h2 {
