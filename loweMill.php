@@ -1,19 +1,18 @@
 <?php
 
-date_default_timezone_set("UTC");
-
-require_once("vendor/autoload.php");
-
 use Goutte\Client;
+
+$loweMillEvents = [];
+
+function gatherLoweMillEvents() {
+    global $loweMillEvents;
 
 $client = new Client();
 
 $crawler = $client->request('GET', 'http://www.lowemill.net/calendar/');
 
-$events = [];
-
 $crawler->filter(".ai1ec-event-wrap")->each(function ($node) {
-    global $events;
+    global $loweMillEvents;
 
     $title = trim($node->filter(".ai1ec-event-title")->extract("title")[0]);
     $location = trim($node->filter(".ai1ec-event-location")->extract("_text")[0]);
@@ -34,6 +33,7 @@ $crawler->filter(".ai1ec-event-wrap")->each(function ($node) {
     $timeEnd = trim($times[1]);
 
     $event = [
+        "source" => "loweMill",
         "title" => $actualTitle,
         "description" => $description,
         "location" => substr($location, 2),
@@ -46,9 +46,7 @@ $crawler->filter(".ai1ec-event-wrap")->each(function ($node) {
         "timeEnd" => $timeEnd,
     ];
 
-    $events[] = $event;
+    $loweMillEvents[] = $event;
 });
-
-echo "<pre>";
-var_dump($events);
-echo "</pre>";
+    return $loweMillEvents;
+}

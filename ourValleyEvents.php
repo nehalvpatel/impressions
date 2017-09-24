@@ -1,7 +1,8 @@
 <?php
 
-require_once("vendor/autoload.php");
+$ourValleyEvents = [];
 
+function gatherOurValleyEvents() {
 $test = file_get_contents("http://www.trumba.com/s.aspx?calendar=ourvalleyevents&widget=main&srpc.cbid=trumba.spud.4&srpc.get=true");
 
 $asdf = explode('body : "', $test);
@@ -9,12 +10,12 @@ $asdf = explode('body : "', $test);
 // die();
 // var_dump(stripslashes($asdf[1]));
 
+global $ourValleyEvents;
+
 $crawler = new Symfony\Component\DomCrawler\Crawler(stripslashes($asdf[1]));
 
-$events = [];
-
 $crawler->filter(".twEventDetails")->each(function ($node) {
-    global $events;
+    global $ourValleyEvents;
 
     $img = trim($node->filter(".twFeaturedImage")->extract("src")[0]);
     $title = trim($node->filteR(".twDescription")->extract("_text")[0]);
@@ -38,6 +39,7 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
     }
 
     $event = [
+        "source" => "ourValleyEvents",
         "title" => $title,
         "description" => $description,
         "location" => $location,
@@ -50,14 +52,15 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
         "timeEnd" => $timeEnd,
     ];
 
-    $events[] = $event;
+    $ourValleyEvents[] = $event;
 });
 
 $bruh = [];
 
 $crawler->filter(".twSimpleTableTable tr")->each(function ($node) {
     global $bruh;
-    global $events;
+    global $ourValleyEvents;
+    $bruh["source"] = "ourValleyEvents";
     if ($node->children()->first()->attr("class") === "twSimpleTableFirstCell") {
         $node->children()->reduce(function ($asdf, $i) {
             return ($i === 2);
@@ -89,10 +92,9 @@ $crawler->filter(".twSimpleTableTable tr")->each(function ($node) {
             $bruh["location"] = $asdf->text();
         });
 
-        $events[] = $bruh;
+        $ourValleyEvents[] = $bruh;
     }
 });
 
-echo "<pre>";
-var_dump($events);
-echo "</pre>";
+return $ourValleyEvents;
+}

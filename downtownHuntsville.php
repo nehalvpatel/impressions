@@ -1,7 +1,8 @@
 <?php
 
-require_once("vendor/autoload.php");
+$downtownEvents = [];
 
+function gatherDowntownHuntsvilleEvents() {
 $test = file_get_contents("http://www.trumba.com/s.aspx?calendar=our-valley-events-downtown-huntsville&widget=main&srpc.cbid=trumba.spud.0&srpc.get=true");
 
 $asdf = explode('body : "', $test);
@@ -9,12 +10,12 @@ $asdf = explode('body : "', $test);
 // die();
 // var_dump(stripslashes($asdf[1]));
 
+global $downtownEvents;
+
 $crawler = new Symfony\Component\DomCrawler\Crawler(stripslashes($asdf[1]));
 
-$events = [];
-
 $crawler->filter(".twEventDetails")->each(function ($node) {
-    global $events;
+    global $downtownEvents;
 
     $img = trim($node->filter(".twFeaturedImage")->extract("src")[0]);
     $title = trim($node->filteR(".twDescription")->extract("_text")[0]);
@@ -38,6 +39,7 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
     }
 
     $event = [
+        "source" => "downtownHuntsville",
         "title" => $title,
         "description" => $description,
         "location" => $location,
@@ -50,9 +52,9 @@ $crawler->filter(".twEventDetails")->each(function ($node) {
         "timeEnd" => $timeEnd,
     ];
 
-    $events[] = $event;
+    $downtownEvents[] = $event;
 });
 
-echo "<pre>";
-var_dump($events);
-echo "</pre>";
+return $downtownEvents;
+
+}

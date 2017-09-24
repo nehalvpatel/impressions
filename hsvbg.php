@@ -1,14 +1,13 @@
 <?php
 
-date_default_timezone_set("UTC");
+$botanicalGardenEvents = [];
 
-require_once("vendor/autoload.php");
-
+function gatherBotanicalGardenEvents() {
 $xml_string = file_get_contents("http://hsvbg.org/?plugin=all-in-one-event-calendar&controller=ai1ec_exporter_controller&action=export_events&xml=true");
 
 $xml = simplexml_load_string($xml_string);
 
-$events = [];
+global $botanicalGardenEvents;
 
 function objectifyDate($dateString) {
     $dateSplit = explode("T", $dateString);
@@ -27,7 +26,7 @@ function objectifyDate($dateString) {
 }
 
 function addEvent($event, $date) {
-    global $events;
+    global $botanicalGardenEvents;
 
     $title = trim($event->summary);
     $description = trim($event->description);
@@ -40,6 +39,7 @@ function addEvent($event, $date) {
     }
 
     $event = [
+        "source" => "botanicalGardens",
         "title" => $title,
         "description" => $description,
         "location" => "",
@@ -52,7 +52,7 @@ function addEvent($event, $date) {
         "timeEnd" => $timeEnd,
     ];
 
-    $events[] = $event;
+    $botanicalGardenEvents[] = $event;
 }
 
 foreach ($xml->vevent as $event) {
@@ -68,6 +68,5 @@ foreach ($xml->vevent as $event) {
     }
 }
 
-echo "<pre>";
-var_dump($events);
-echo "</pre>";
+return $botanicalGardenEvents;
+}
